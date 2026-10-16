@@ -34,3 +34,9 @@ pnpm-debug.log*
 
 # ============ 部署平台 ============
 .vercel
+
+# ============ 本地私有配置（含账号密钥，勿提交）============
+config.js
+probe.mjs
+probe2.mjs
+probe-*.mjs

@@ -78,19 +78,9 @@ export class MiMessageManager {
    * 拉取最新的 2 条消息，用于和上一条消息比对是否连续
    */
   private async _fetchNext2Messages() {
-    let msgs = await this._fetchHistoryMsgs({ limit: 2, filterAnswer: false });
-    const newest = firstOf(msgs);
-    if (
-      newest &&
-      newest.timestamp > this._lastQueryMsg!.timestamp &&
-      !this._hasNativeAnswer(newest)
-    ) {
-      const completed = await this._waitForNativeAnswer(newest);
-      if (!completed) {
-        return;
-      }
-      msgs = completed;
-    }
+    const msgs = await this._fetchHistoryMsgs({ limit: 2, filterAnswer: false });
+    // 不再等待小爱原生回答生成：本部署的 onMessage 不使用 xiaoAIAnswer，
+    // 立即分发消息可让打断指令赶在原生 TTS 开口之前发出（否则会先听到一段默认回答）
     if (msgs.length < 1 || firstOf(msgs)!.timestamp <= this._lastQueryMsg!.timestamp) {
       // 没有拉到新消息
       return;
